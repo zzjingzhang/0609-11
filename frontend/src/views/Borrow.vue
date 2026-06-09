@@ -106,7 +106,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import request from '../../utils/request';
+import request from '../utils/request';
 
 const records = ref([]);
 const idleAssets = ref([]);

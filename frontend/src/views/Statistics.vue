@@ -111,7 +111,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '../../utils/request';
+import request from '../utils/request';
 
 const overview = ref({});
 const statusStats = ref([]);

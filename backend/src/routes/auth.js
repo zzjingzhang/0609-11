@@ -78,4 +78,32 @@ router.get('/info', authMiddleware, (req, res) => {
   res.json({ code: 200, data: user });
 });
 
+router.put('/password', authMiddleware, (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ code: 400, message: '原密码和新密码不能为空' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ code: 400, message: '新密码长度不能少于6位' });
+  }
+
+  const user = dbGet('SELECT * FROM users WHERE id = ?', [req.user.id]);
+  if (!user) {
+    return res.status(404).json({ code: 404, message: '用户不存在' });
+  }
+
+  if (!bcrypt.compareSync(oldPassword, user.password)) {
+    return res.status(400).json({ code: 400, message: '原密码错误' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(newPassword, 10);
+  run('UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [hashedPassword, req.user.id]);
+
+  logOperation(req.user.id, req.user.username, 'PUT /api/auth/password', 'auth', '修改个人密码', req.ip);
+
+  res.json({ code: 200, message: '密码修改成功' });
+});
+
 module.exports = router;

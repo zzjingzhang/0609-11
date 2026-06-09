@@ -75,16 +75,12 @@ router.delete('/:id', authMiddleware, adminMiddleware, (req, res) => {
   res.json({ code: 200, message: '删除成功' });
 });
 
-router.put('/:id/password', authMiddleware, (req, res) => {
+router.put('/:id/password', authMiddleware, adminMiddleware, (req, res) => {
   const { id } = req.params;
-  const { oldPassword, newPassword } = req.body;
+  const { newPassword } = req.body;
 
   if (!newPassword) {
     return res.status(400).json({ code: 400, message: '新密码不能为空' });
-  }
-
-  if (parseInt(id) !== req.user.id && req.user.role !== 'admin') {
-    return res.status(403).json({ code: 403, message: '权限不足' });
   }
 
   const user = dbGet('SELECT * FROM users WHERE id = ?', [id]);
@@ -92,18 +88,11 @@ router.put('/:id/password', authMiddleware, (req, res) => {
     return res.status(404).json({ code: 404, message: '用户不存在' });
   }
 
-  if (parseInt(id) === req.user.id) {
-    const bcrypt = require('bcryptjs');
-    if (!bcrypt.compareSync(oldPassword, user.password)) {
-      return res.status(400).json({ code: 400, message: '原密码错误' });
-    }
-  }
-
   const bcrypt = require('bcryptjs');
   const hashedPassword = bcrypt.hashSync(newPassword, 10);
   run('UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [hashedPassword, id]);
 
-  res.json({ code: 200, message: '密码修改成功' });
+  res.json({ code: 200, message: '密码重置成功' });
 });
 
 module.exports = router;

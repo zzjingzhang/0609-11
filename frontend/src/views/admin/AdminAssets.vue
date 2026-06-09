@@ -75,7 +75,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import request from '../../../utils/request';
+import request from '../../utils/request';
 
 const assets = ref([]);
 const keyword = ref('');
