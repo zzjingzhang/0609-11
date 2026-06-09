@@ -56,7 +56,7 @@
 │               ├── AdminAssets.vue # 资产管理
 │               ├── AdminUsers.vue  # 用户管理
 │               └── AdminLogs.vue   # 操作日志
-├── data/                       # SQLite数据库文件目录（运行后自动生成）
+├── data/                       # SQLite数据库文件目录（运行后自动生成，位于backend/data/下）
 ├── .gitignore
 └── README.md
 ```
@@ -94,6 +94,7 @@
 
 - Node.js >= 16
 - npm >= 8
+- 无需额外安装 Python 或编译工具，数据库依赖使用纯 JavaScript 的 sql.js（SQLite WASM 版本）
 
 ## 快速开始
 
@@ -104,12 +105,16 @@ cd backend
 npm install
 ```
 
+后端依赖包括：express、cors、jsonwebtoken、bcryptjs、sql.js
+
 ### 2. 安装前端依赖
 
 ```bash
 cd frontend
 npm install
 ```
+
+前端依赖包括：vue、vue-router、pinia、axios、tailwindcss、vite
 
 ### 3. 数据库初始化
 
@@ -120,7 +125,11 @@ cd backend
 npm run init-db
 ```
 
-初始化后会自动创建 SQLite 数据库文件（`data/asset.db`）并插入默认账号和5个默认资产分类。
+初始化后会自动创建 SQLite 数据库文件 `backend/data/asset.db` 并插入默认账号和5个默认资产分类（电子设备、办公家具、交通工具、软件许可、其他）。
+
+数据库文件位置：`backend/data/asset.db`
+
+> 注意：数据库文件已在 `.gitignore` 中排除，不会提交到版本库。删除该文件后重新执行初始化命令即可重建。
 
 ### 4. 启动后端
 
@@ -189,5 +198,5 @@ npm run dev
 ## 技术栈
 
 - **前端**：Vue 3 + Vue Router + Pinia + Tailwind CSS + Vite + Axios
-- **后端**：Node.js + Express + better-sqlite3 + JWT + bcryptjs
-- **数据库**：SQLite（WAL模式）
+- **后端**：Node.js + Express + sql.js（SQLite WASM 版本，无需编译原生模块）+ JWT + bcryptjs
+- **数据库**：SQLite（通过 sql.js 在内存中运行，自动持久化到文件）

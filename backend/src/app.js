@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { initDb, saveDb } = require('./db/database');
+const { initDb, closeDb } = require('./db/database');
 const { initDatabase } = require('./db/init');
 const { authMiddleware } = require('./middleware/auth');
 const { logMiddleware } = require('./middleware/logger');
@@ -50,14 +50,14 @@ async function start() {
     });
 
     process.on('SIGINT', () => {
-      saveDb();
-      console.log('Database saved. Server shutting down.');
+      closeDb();
+      console.log('Database saved and closed. Server shutting down.');
       process.exit(0);
     });
 
     process.on('SIGTERM', () => {
-      saveDb();
-      console.log('Database saved. Server shutting down.');
+      closeDb();
+      console.log('Database saved and closed. Server shutting down.');
       process.exit(0);
     });
   } catch (err) {

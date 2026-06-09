@@ -7,6 +7,7 @@ const DB_DIR = path.dirname(DB_PATH);
 
 let db = null;
 let saveTimeout = null;
+let SQL = null;
 
 async function initDb() {
   if (db) return db;
@@ -15,7 +16,7 @@ async function initDb() {
     fs.mkdirSync(DB_DIR, { recursive: true });
   }
 
-  const SQL = await initSqlJs();
+  SQL = await initSqlJs();
 
   if (fs.existsSync(DB_PATH)) {
     const buffer = fs.readFileSync(DB_PATH);
@@ -124,4 +125,16 @@ function transaction(fn) {
   }
 }
 
-module.exports = { initDb, getDb, saveDb, run, get, all, exec, transaction, DB_PATH };
+function closeDb() {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout);
+    saveTimeout = null;
+  }
+  saveDb();
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
+
+module.exports = { initDb, getDb, saveDb, closeDb, run, get, all, exec, transaction, DB_PATH };

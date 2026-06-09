@@ -1,4 +1,4 @@
-const { initDb, exec, run, get: dbGet, saveDb } = require('./database');
+const { initDb, exec, run, get: dbGet, saveDb, closeDb } = require('./database');
 
 function initDatabase() {
   exec(`
@@ -120,12 +120,11 @@ function initDatabase() {
 if (require.main === module) {
   initDb().then(() => {
     initDatabase();
-    saveDb();
+    closeDb();
     console.log('Database initialization complete.');
-    process.exit(0);
   }).catch(err => {
     console.error('Failed to initialize database:', err);
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 

@@ -43,6 +43,10 @@ router.post('/:id/return', authMiddleware, (req, res) => {
     return res.status(400).json({ code: 400, message: '该借用记录已归还' });
   }
 
+  if (record.borrower_id !== req.user.id && req.user.role !== 'admin') {
+    return res.status(403).json({ code: 403, message: '无权归还他人的借用记录，仅借用人本人或管理员可操作' });
+  }
+
   const returnDate = actual_return_date || new Date().toISOString().slice(0, 10);
 
   transaction(() => {

@@ -3,7 +3,7 @@ const router = express.Router();
 const { run, get: dbGet, all } = require('../db/database');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 
-router.get('/', authMiddleware, (req, res) => {
+router.get('/', authMiddleware, adminMiddleware, (req, res) => {
   const { keyword, role, status, page = 1, pageSize = 20 } = req.query;
   const pageNum = parseInt(page);
   const size = parseInt(pageSize);
