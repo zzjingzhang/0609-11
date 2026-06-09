@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+*.log
+*.sqlite
+*.sqlite3
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+package-lock.json
